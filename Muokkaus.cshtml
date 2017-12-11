@@ -1,0 +1,67 @@
+﻿@model AdManagerWeb.Models.UserModel
+
+    @{ 
+        string fName = (Model.FirstName != null) ? (string)Model.FirstName : "";
+        string lName = (Model.LastName != null) ? (string)Model.LastName : "";
+        string username = (Model.Username != null) ? (string)Model.Username : "";
+     }
+<div>
+    <table>
+        <tr>
+            <td>Etunimi: </td>
+            <td><input type="text" id="Enimi" value="@fName" /></td>
+        </tr>
+        <tr>
+            <td>Sukunimi: </td>
+            <td><input type="text" id="Snimi" value="@lName" /></td>
+        </tr>
+        <tr>
+            <td>Käyttäjätunnus: </td>
+            <td><input type="text" id="Username" value="@username" readonly/></td>
+        </tr>
+        <tr>
+            <td>Email: </td>
+            <td>@Model.Email</td>
+        </tr>
+        <tr>
+            <td>EmployeeType: </td>
+            <td>@Model.EmployeeType</td>
+        </tr>
+    </table><br />
+    <button id="Tallenna">Tallenna muutokset</button>
+</div>
+<div id="OmatTiedot"></div>
+<div>
+    <h3>Vaihda salasanaa</h3>
+    <form id="SalasanaVaihtoForm">
+        <label for="uusiSalasana">Uusi salasana:</label><input type="password" id="UusiSalasana" /><br />
+    </form>
+    <button id="VaihdaSalasana">Vaihda salasana</button>
+</div>
+<div id="SalasanaVaihtoDiv"></div>
+@section scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#Tallenna').click(function () {
+                $('#OmatTiedot').load("/Home/OmatMuokkaus", {
+                    username: $('#Username').val(), fName: $('#Enimi').val(), lName: $('#Snimi').val()
+                });
+            });
+            $('#VaihdaSalasana').click(function () {
+                $('#SalasanaVaihtoDiv').load("/Home/Salismuokkaus", {
+                    username: $('#Username').val(), salasana: $('#UusiSalasana').val()
+                });
+                document.getElementById('SalasanaVaihtoForm').reset();
+            });
+        });
+    </script>
+}
+@{
+    string virhe = @ViewData["utuja"] as string; //ottaa virheen/onnistumisviestin vastaan
+    if (virhe != null)
+    {
+        <b>@virhe</b>
+
+    }
+}

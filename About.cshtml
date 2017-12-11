@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+@model AdManagerWeb.Models.UserModel
+
+<div>
+    <table>
+        <tr>
+            <td>Nimi: </td>
+            <td>@Model.DisplayName</td>
+        </tr>
+        <tr>
+            <td>Tunnus: </td>
+            <td>@Model.Username</td>
+        </tr>
+        <tr>
+            <td>Email: </td>
+            <td>@Model.Email</td>
+        </tr>
+        <tr>
+            <td>EmployeeType: </td>
+            <td>@Model.EmployeeType</td>
+        </tr>
+    </table>
+    <input type="button" value="Muokkaa" name="Muokkaa" onclick="location.href='@Url.Action("Muokkaus", "Home")'">
+</div>
+
+@{ 
+    if(Model.EmployeeType == "HR" || Model.EmployeeType == "Admins")
+    {
+
+    }
+
+    if(Model.EmployeeType == "Admins")
+    {
+        <div>
+            <h3>Uuden käyttäjän lisääminen</h3>
+            <form id="UusiKayttajaForm">
+                <label for="etunimi">Etunimi: </label><input type="text" id="Enimi"/>
+                <label for="sukunimi">Sukunimi: </label><input type="text" id="Snimi" /><br />
+                <label for="salasana">Salasana: </label><input type="password" id="Salasana"><br />
+                <label for="email">Email: </label><input type="text" id="Sposti"/><br />
+                <label for="EmployeeType">Työntekijätyyppi: </label><input type="text" id="EmployeeType" />
+            </form>
+            <button id="Lisaa">Lisää</button>
+        </div>
+        <div id="LisaysDiv"></div>
+        <div>
+            <h3>Käyttäjä tietojen vaihtaminen</h3>
+            <form id="KayttajaMuokkausForm">
+                <label for="kayttajanimi">Käyttäjänimi: </label><input type="text" id="Kayttaja" /><br />
+                <label for="uusiNimi">Uusi käyttäjänimi: </label><input type="text" id="UusiKayttaja" />
+            </form>
+            <button id="Vaihda">Vaihda</button>
+        </div>
+        <div id="VaihdaDiv"></div>
+    }
+}
+@section scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#Lisaa').click(function () {
+                $('#LisaysDiv').load("/Home/Lisays", {
+                    Enimi: $('#Enimi').val(), Snimi: $('#Snimi').val(), Password: $('#Salasana').val(),
+                    Email: $('#Sposti').val(), EmployeeType: $('#EmployeeType').val()
+                });
+                document.getElementById('UusiKayttajaForm').reset();
+            });
+
+            $('#Vaihda').click(function () {
+                $('#VaihdaDiv').load("/Home/Vaihda", {
+                    username: $('#Kayttaja').val(), newUsername: $('#UusiKayttaja').val()
+                });
+                document.getElementById('KayttajaMuokkausForm').reset();
+            });
+        });
+    </script>
+}
+@{
+    string virhe = @ViewData["utuja"] as string; //ottaa virheen/onnistumisviestin vastaan
+    if (virhe != null)
+    {
+        <b>@virhe</b>
+
+    }
+}
